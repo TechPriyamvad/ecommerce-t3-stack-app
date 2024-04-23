@@ -7,7 +7,7 @@ const EcommerceAccountCreation: React.FC = () => {
         <div className="bg-neutralwhite relative h-[900px] w-[1440px] overflow-hidden">
           <div className="bg-neutralwhite absolute left-[432px] top-[176px] h-[691px] w-[576px] rounded-[20px] border border-solid border-[#c1c1c1]">
             <button className="all-[unset] bg-neutralblack absolute left-[59px] top-[436px] box-border flex h-[56px] w-[456px] items-center justify-center gap-[10px] overflow-hidden rounded-[6px] border border-solid border-black bg-black px-[148px] py-[18px]">
-              <div className="text-neutralwhite relative ml-[-1.00px] mr-[-1.00px] mt-[-0.50px] w-fit whitespace-nowrap text-center text-[16px] font-medium leading-[normal] tracking-[1.12px] [font-family:'Inter-Medium',Helvetica]">
+              <div className="text-white relative ml-[-1.00px] mr-[-1.00px] mt-[-0.50px] w-fit whitespace-nowrap text-center text-[16px] font-medium leading-[normal] tracking-[1.12px] [font-family:'Inter-Medium',Helvetica]">
                 CREATE ACCOUNT
               </div>
             </button>
