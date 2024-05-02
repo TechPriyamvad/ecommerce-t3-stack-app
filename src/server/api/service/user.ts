@@ -1,6 +1,9 @@
-export function createAccount(input){
-    const { name, email, password } = input;
+import { signup } from '../repository/user';
+
+export async function createAccount(input){
+    const { name, email} = input;
+    const newUser = await signup(name,email);
     return {
-      message: `User ${name} created successfully with email ${email} and password ${password}`,
+      message: `User ${newUser.name} created successfully with email ${newUser.email}`,
     };
 }
