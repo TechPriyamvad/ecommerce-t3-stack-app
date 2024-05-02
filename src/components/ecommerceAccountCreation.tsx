@@ -23,10 +23,10 @@ const EcommerceAccountCreation: React.FC = () => {
     // console.log(email);
   };
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      await signupMutation.mutate({name, email, password});
+      signupMutation.mutate({name, email, password});
     } catch (error) {
       console.error(error);
     }
