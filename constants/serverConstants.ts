@@ -1,0 +1,1 @@
+export const FAKER_CATEGORY_COUNT = 100;
