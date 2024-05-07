@@ -1,6 +1,14 @@
 import React from "react";
-import { TiTick } from "react-icons/ti";
+import { api } from "~/utils/api";
+
 const EcommerceCategories: React.FC = () => {
+  const {data:categories} = api.category.fetchCategories.useQuery({page:4});
+  console.log('categories: ',categories);
+  if (!categories) {
+    // Handle the case when categories data is still loading
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
   return (
     <>
       <div className="flex w-full flex-row justify-center bg-white">
@@ -18,48 +26,6 @@ const EcommerceCategories: React.FC = () => {
             </p>
             <div className="text-neutralblack absolute left-[105px] top-[164px] whitespace-nowrap text-[20px] font-medium leading-[26px] tracking-[0] [font-family:'Inter-Medium',Helvetica]">
               My saved interests!
-            </div>
-            <p className="absolute left-[105px] top-[559px] whitespace-nowrap text-[20px] font-medium leading-[26px] tracking-[0] text-transparent [font-family:'Inter-Medium',Helvetica]">
-              <span className="text-[#ababab]">
-                &lt;&lt;&nbsp;&nbsp;&lt;&nbsp;&nbsp;1&nbsp;&nbsp;2&nbsp;&nbsp;3&nbsp;&nbsp;
-              </span>
-              <span className="text-black">4</span>
-              <span className="text-[#ababab]">
-                &nbsp;&nbsp;5&nbsp;&nbsp;6&nbsp;&nbsp;7 ... &gt;&nbsp;&nbsp;
-                &gt;&gt;
-              </span>
-            </p>
-            <div className="text-neutralblack absolute left-[141px] top-[217px] whitespace-nowrap text-[16px] font-normal leading-[26px] tracking-[0] [font-family:'Inter-Regular',Helvetica]">
-              Shoes
-            </div>
-            <div className="text-neutralblack absolute left-[141px] top-[266px] whitespace-nowrap text-[16px] font-normal leading-[26px] tracking-[0] [font-family:'Inter-Regular',Helvetica]">
-              Men T-shirts
-            </div>
-            <div className="text-neutralblack absolute left-[141px] top-[315px] whitespace-nowrap text-[16px] font-normal leading-[26px] tracking-[0] [font-family:'Inter-Regular',Helvetica]">
-              Makeup
-            </div>
-            <div className="bg-neutralblack absolute left-[105px] top-[219px] h-[24px] w-[24px] rounded-[4px]">
-              <TiTick className="!absolute !left-[5px] !top-[7px] !h-[10px] !w-[14px]" />
-            </div>
-            <div className="absolute left-[105px] top-[268px] h-[24px] w-[24px] rounded-[4px] bg-[#cccccc]" />
-            <div className="bg-neutralblack absolute left-[105px] top-[317px] h-[24px] w-[24px] rounded-[4px]">
-              <TiTick className="!absolute !left-[5px] !top-[7px] !h-[10px] !w-[14px]" />
-            </div>
-            <div className="text-neutralblack absolute left-[141px] top-[369px] whitespace-nowrap text-[16px] font-normal leading-[26px] tracking-[0] [font-family:'Inter-Regular',Helvetica]">
-              Jewellery
-            </div>
-            <div className="text-neutralblack absolute left-[141px] top-[418px] whitespace-nowrap text-[16px] font-normal leading-[26px] tracking-[0] [font-family:'Inter-Regular',Helvetica]">
-              Women T-shirts
-            </div>
-            <div className="text-neutralblack absolute left-[141px] top-[467px] whitespace-nowrap text-[16px] font-normal leading-[26px] tracking-[0] [font-family:'Inter-Regular',Helvetica]">
-              Furniture
-            </div>
-            <div className="bg-neutralblack absolute left-[105px] top-[371px] h-[24px] w-[24px] rounded-[4px]">
-              <TiTick className="!absolute !left-[5px] !top-[7px] !h-[10px] !w-[14px]" />
-            </div>
-            <div className="absolute left-[105px] top-[420px] h-[24px] w-[24px] rounded-[4px] bg-[#cccccc]" />
-            <div className="bg-neutralblack absolute left-[105px] top-[469px] h-[24px] w-[24px] rounded-[4px]">
-              <TiTick className="!absolute !left-[5px] !top-[7px] !h-[10px] !w-[14px]" />
             </div>
           </div>
         </div>
