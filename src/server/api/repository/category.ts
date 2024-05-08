@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 interface Category {
     id: number;
     name: string;
-    createdAt: Date;
-    updateAt: Date;
+    createdAt: Date | null;
+    updateAt: Date | null;
     isDeleted: boolean;
     isSelected: boolean;
 }
@@ -20,7 +20,7 @@ export async function fetchAllCategoriesFromDatabase(page:number):Promise<Catego
             skip:skip,
             take:PAGE_SIZE
         });
-        
+
         return categories;
     } catch (error) {
         console.error('Error seeding categories: ',error);

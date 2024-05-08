@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { api } from "~/utils/api";
+import { Pagination } from "@nextui-org/pagination";
+import { ITEMS_PER_PAGE } from "constants/clientConstants";
 
 const EcommerceCategories: React.FC = () => {
-  const {data:categories,isLoading,error} = api.category.fetchCategories.useQuery({page:1});
-  
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const {
+    data: categories,
+    isLoading,
+    error,
+    refetch,
+  } = api.category.fetchCategories.useQuery({ page: currentPage });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        //@ts-expect-error : to fix typescript error caused due to page property not present in refetch options
+        await refetch({ page: currentPage });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    void fetchData();
+  }, [currentPage, refetch]);
+
   // console.log('categories: ',categories);
   if (isLoading) {
     // Handle the case when categories data is still loading
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
   }
-  if(error) return <div className="flex justify-center items-center h-screen">Error:{error.message}</div>;
+  if (error)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Error:{error?.message}
+      </div>
+    );
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
   return (
     <>
       <div className="flex w-full flex-row justify-center bg-white">
@@ -30,15 +62,30 @@ const EcommerceCategories: React.FC = () => {
               My saved interests!
             </div>
             <div className="text-neutralblack absolute left-[105px] top-[220px] whitespace-nowrap text-[16px] font-medium leading-[26px] tracking-[0] [font-family:'Inter-Medium',Helvetica]">
-            <ul>
-              {categories?.map((category) => (
-                <li key={category.id} className="mb-3 text-black font-medium space-x-2">
-                  <input type="checkbox" checked={category.isSelected} className="bg-black"/>
-                  <span>{category.name}</span>
-                </li>
-              ))}
-            </ul>
-          </div> 
+              <ul>
+                {categories?.map((category) => (
+                  <li
+                    key={category?.id}
+                    className="mb-3 space-x-2 font-medium text-black"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={category?.isSelected}
+                    />
+                    <span>{category?.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="absolute left-[105px] top-[500px] leading-[26px] [font-family:'Inter-Medium',Helvetica]">
+              <Pagination
+                total={ITEMS_PER_PAGE} // Total number of pages
+                initialPage={currentPage}
+                onChange={handlePageChange}
+                showControls = {true}
+                color="primary"
+              />
+            </div>
           </div>
         </div>
       </div>
