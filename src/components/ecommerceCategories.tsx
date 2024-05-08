@@ -1,20 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { Pagination } from "@nextui-org/pagination";
 import { ITEMS_PER_PAGE } from "constants/clientConstants";
 
 const EcommerceCategories: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [categorySelection, setCategorySelection] = React.useState<
+    Record<number, boolean>
+  >({});
+
   const {
-    data: categories,
+    data: categoryData,
     isLoading,
     error,
     refetch,
   } = api.category.fetchCategories.useQuery({ page: currentPage });
 
+  const updateCategoryMutation =
+    api.category.updateCategorySelection.useMutation();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(categorySelection);
+        
         //@ts-expect-error : to fix typescript error caused due to page property not present in refetch options
         await refetch({ page: currentPage });
       } catch (error) {
@@ -23,6 +32,17 @@ const EcommerceCategories: React.FC = () => {
     };
     void fetchData();
   }, [currentPage, refetch]);
+
+  useEffect(() => {
+    // Initialize category selection based on category data
+    if (categoryData) {
+      const initialSelection = categoryData.reduce<Record<number, boolean>>((acc, category) => {
+        acc[category.id] = category.isSelected;
+        return acc;
+      }, {});
+      setCategorySelection(initialSelection);
+    }
+  }, [categoryData]);
 
   // console.log('categories: ',categories);
   if (isLoading) {
@@ -42,6 +62,26 @@ const EcommerceCategories: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleCategorySelection = async (
+    categoryId: number,
+    isSelected: boolean,
+  ) => {
+    try {
+      const updatedCategory = await updateCategoryMutation.mutateAsync({
+        id: categoryId,
+        isSelected,
+      });
+      console.log(updatedCategory);
+      setCategorySelection((prevSelection) => ({
+        ...prevSelection,
+        [categoryId]: isSelected,
+      }));
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
   return (
     <>
@@ -63,14 +103,17 @@ const EcommerceCategories: React.FC = () => {
             </div>
             <div className="text-neutralblack absolute left-[105px] top-[220px] whitespace-nowrap text-[16px] font-medium leading-[26px] tracking-[0] [font-family:'Inter-Medium',Helvetica]">
               <ul>
-                {categories?.map((category) => (
+                {categoryData?.map((category) => (
                   <li
                     key={category?.id}
                     className="mb-3 space-x-2 font-medium text-black"
                   >
                     <input
                       type="checkbox"
-                      checked={category?.isSelected}
+                      checked={categorySelection[category?.id] ?? false}
+                      onChange={(e) =>
+                        handleCategorySelection(category?.id, e.target.checked)
+                      }
                     />
                     <span>{category?.name}</span>
                   </li>
@@ -82,7 +125,7 @@ const EcommerceCategories: React.FC = () => {
                 total={ITEMS_PER_PAGE} // Total number of pages
                 initialPage={currentPage}
                 onChange={handlePageChange}
-                showControls = {true}
+                showControls={true}
                 color="primary"
               />
             </div>
