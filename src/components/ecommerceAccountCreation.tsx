@@ -7,6 +7,7 @@ const EcommerceAccountCreation: React.FC = () => {
   const [password, setPassword] = useState("");
 
   const signupMutation = api.user.signUp.useMutation();
+  const findUserByEmailQuery = api.user.findUserByEmail.useQuery({ email })
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -23,10 +24,11 @@ const EcommerceAccountCreation: React.FC = () => {
     // console.log(email);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
-      await signupMutation.mutateAsync({name, email, password});
+      const {data:user} = await findUserByEmailQuery.refetch();
+      user ? alert('User already exists') : await signupMutation.mutateAsync({name, email, password});
     } catch (error) {
       console.error(error);
     }

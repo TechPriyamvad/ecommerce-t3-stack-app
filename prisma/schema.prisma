@@ -17,6 +17,8 @@ model User {
   email     String   @unique
   name      String?
   isDeleted Boolean  @default(false)
+  iseVerified Boolean @default(false)
+  verification_code String?
 }
 
 model Category{
