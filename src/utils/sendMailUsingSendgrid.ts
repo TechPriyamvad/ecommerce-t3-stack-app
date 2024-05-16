@@ -4,7 +4,7 @@ const apiKey = process.env.SENDGRID_API_KEY;
 export async function sendVerificationEmailUsingSendgrid(
   email: string,
   verification_code: string,
-): Promise<void> {
+){
   try {
     if (!apiKey) {
       throw new Error("SENDGRID_API_KEY is not set");
@@ -16,7 +16,9 @@ export async function sendVerificationEmailUsingSendgrid(
       subject: "Email Verification Code",
       html: `<strong>Your verification code is: ${verification_code}</strong>`,
     };
-    await sgMail.send(msg);
+    const sendgridResponse = await sgMail.send(msg);
+    // console.log('sendgrid');   
+    return sendgridResponse;
   } catch (error) {
     throw error;
   }

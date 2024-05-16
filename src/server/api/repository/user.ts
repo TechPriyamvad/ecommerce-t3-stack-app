@@ -28,3 +28,34 @@ export async function findUserByEmailInDatabase(email: string){
         throw new Error("Failed to find user by email");
     }
 }
+export async function verifyUserInDatabase(email:string,verification_code:string){
+    try {
+        const user = await prisma.user.findUnique({
+            where:{
+                email,
+                verification_code
+            }
+        })
+        return user;
+    } catch (error) {
+        console.error('Error verifying user: ',error);
+        throw new Error("Failed to verify user");
+    }
+}
+export async function updateVerifiedUserInDatabase(email:string){
+    try {
+        const updatedUser = await prisma.user.update({
+            where:{
+                email
+            },
+            data:{
+                isVerified:true,
+                verification_code:null
+            }
+        });
+        return updatedUser;
+    } catch (error) {
+        console.error('Error updating user: ',error);
+        throw new Error("Failed to update user");
+    }
+}

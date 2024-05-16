@@ -1,13 +1,15 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
-
+// emailVerification?email=priyamvadofficial1@gmail.com
 const EcommerceAccountCreation: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const signupMutation = api.user.signUp.useMutation();
-  const findUserByEmailQuery = api.user.findUserByEmail.useQuery({ email })
+  const {refetch} = api.user.findUserByEmail.useQuery({ email })
+  const router = useRouter();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -27,8 +29,16 @@ const EcommerceAccountCreation: React.FC = () => {
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const {data:user} = await findUserByEmailQuery.refetch();
-      user ? alert('User already exists') : await signupMutation.mutateAsync({name, email, password});
+      const {data:user} = await refetch();
+      console.log(user);
+      if (user) {
+        // redirect to login page
+        alert('User already exists');
+      }
+      else{
+        await signupMutation.mutateAsync({name, email, password});
+        await router.push(`/emailVerification?email=${email}`);
+      }
     } catch (error) {
       console.error(error);
     }
