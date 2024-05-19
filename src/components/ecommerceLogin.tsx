@@ -1,10 +1,21 @@
 import router from "next/router";
 import React, { useState } from "react";
+import { type User } from "~/server/api/schema/User";
+import { api } from "~/utils/api";
+
+type loginData = {
+  status: number;
+  message: string;
+  token: string;
+  user: User;
+};
 
 const EcommerceLogin: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const {data,isSuccess,isError,error,mutateAsync} = api.user.login.useMutation<loginData>();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -14,9 +25,13 @@ const EcommerceLogin: React.FC = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add yEcommerceour n logic here
+    try {
+      await mutateAsync({ email, password });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleShowPassword = (
@@ -26,6 +41,26 @@ const EcommerceLogin: React.FC = () => {
     setShowPassword(!showPassword);
   };
 
+  const onSuccessFullLogin = async()=>{
+    localStorage.setItem("jwtToken", data?.token ?? '');
+    await router.push('/categories');
+  }
+
+  if (isSuccess) {
+    if (data?.status === 200) {
+      console.log(data?.token);
+      onSuccessFullLogin().then(() => {
+        console.log('Successfully logged in and redirected to /categories');
+      }).catch((error) => {
+        console.error('Failed to log in and redirect:', error);
+      });
+    }
+  }
+
+  if (isError) {
+    console.error(error);
+  }
+
   const redirectToSignupPage = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
@@ -33,6 +68,7 @@ const EcommerceLogin: React.FC = () => {
       event.preventDefault();
       await router.push("/signup");
     } catch (error) {
+      console.error(error);
       throw error;
     }
   };

@@ -1,7 +1,12 @@
 import { PrismaClient } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { PAGE_SIZE } from "constants/serverConstants";
 
 const prisma = new PrismaClient();
+/**
+    if we are importing a dependency like prisma in Nodejs(for database connections and querying) in multiple repositories.
+    Do I need to use singleton pattern there
+ */
 
 interface Category {
   id: number;
@@ -26,7 +31,7 @@ export async function fetchAllCategoriesFromDatabase(
     return categories;
   } catch (error) {
     console.error("Error seeding categories: ", error);
-    throw new Error("Failed to seed categories");
+    throw new TRPCError({message:"Error seeding categories",code:'INTERNAL_SERVER_ERROR'});
   }
 }
 
@@ -42,6 +47,6 @@ export async function updateCategorySelectionInDatabase(
     return updatedCategory;
   } catch (error) {
     console.error("Error updating category selection: ", error);
-    throw new Error("Failed to update category selection");
+    throw new TRPCError({message:"Failed to update category selection",code:'INTERNAL_SERVER_ERROR'});
   }
 }

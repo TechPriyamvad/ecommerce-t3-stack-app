@@ -1,18 +1,20 @@
 import { PrismaClient } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 const prisma = new PrismaClient();
-export async function signup(name: string, email: string,verification_code:string){
+export async function signup(name: string, email: string,verification_code:string,password:string){
     try {
         const newUser = await prisma.user.create({
             data: {
                 name,
                 email,
-                verification_code
+                verification_code,
+                password,
             }
         });
         return newUser;
     } catch (error) {
-        console.error('Error creating user: ',error);
-        throw new Error("Failed to create user");
+        console.error((error as { message: string }).message);
+        throw new TRPCError({message:"Failed to create user",code:'INTERNAL_SERVER_ERROR'});
     }
 }
 export async function findUserByEmailInDatabase(email: string){
@@ -24,8 +26,8 @@ export async function findUserByEmailInDatabase(email: string){
         });
         return user;
     } catch (error) {
-        console.error('Error finding user by email: ',error);
-        throw new Error("Failed to find user by email");
+        console.error((error as { message: string }).message);
+        throw new TRPCError({message:"Failed to find user by email",code:'INTERNAL_SERVER_ERROR'});
     }
 }
 export async function verifyUserInDatabase(email:string,verification_code:string){
@@ -38,8 +40,8 @@ export async function verifyUserInDatabase(email:string,verification_code:string
         })
         return user;
     } catch (error) {
-        console.error('Error verifying user: ',error);
-        throw new Error("Failed to verify user");
+        console.error((error as { message: string }).message);
+        throw new TRPCError({message:"Failed to verify user",code:'INTERNAL_SERVER_ERROR'});
     }
 }
 export async function updateVerifiedUserInDatabase(email:string){
@@ -56,6 +58,6 @@ export async function updateVerifiedUserInDatabase(email:string){
         return updatedUser;
     } catch (error) {
         console.error('Error updating user: ',error);
-        throw new Error("Failed to update user");
+        throw new TRPCError({message:"Failed to update user",code:'INTERNAL_SERVER_ERROR'});
     }
 }

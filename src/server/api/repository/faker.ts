@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { generateFakeCategories } from "~/utils/fakerDataGenerator";
 
 const prisma = new PrismaClient();
@@ -12,6 +13,6 @@ export async function seedCategories(categoryCount:number){
         return categories;
     } catch (error) {
         console.error('Error seeding categories: ',error);
-        throw new Error("Failed to seed categories");    
+        throw new TRPCError({message:'Error seeding categories',code:'INTERNAL_SERVER_ERROR'});   
     }
 }

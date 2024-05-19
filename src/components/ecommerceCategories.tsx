@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { api } from "~/utils/api";
+import { api, setToken } from "~/utils/api";
 import { Pagination } from "@nextui-org/pagination";
 import { ITEMS_PER_PAGE } from "constants/clientConstants";
+import router from "next/router";
 
 const EcommerceCategories: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -9,12 +10,7 @@ const EcommerceCategories: React.FC = () => {
     Record<number, boolean>
   >({});
 
-  const {
-    data: categoryData,
-    isLoading,
-    error,
-    refetch,
-  } = api.category.fetchCategories.useQuery({ page: currentPage });
+  const {data:categoryData,isPending,isError,error,mutateAsync} = api.category.fetchCategories.useMutation();
 
   const updateCategoryMutation =
     api.category.updateCategorySelection.useMutation();
@@ -22,30 +18,42 @@ const EcommerceCategories: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(categorySelection);
-        
-        //@ts-expect-error : to fix typescript error caused due to page property not present in refetch options
-        await refetch({ page: currentPage });
+        const token = localStorage.getItem("jwtToken");
+        if (!token) await router.push("/login");
+        else {
+          console.log(categorySelection);
+          setToken(token);
+          await mutateAsync({
+            page: currentPage,
+          });
+        }
       } catch (error) {
+        if (error) {
+          localStorage.removeItem("jwtToken");
+          await router.push("/login");
+        }
         console.error(error);
       }
     };
     void fetchData();
-  }, [currentPage, refetch]);
+  }, [currentPage,mutateAsync]);
 
   useEffect(() => {
     // Initialize category selection based on category data
     if (categoryData) {
-      const initialSelection = categoryData.reduce<Record<number, boolean>>((acc, category) => {
-        acc[category.id] = category.isSelected;
-        return acc;
-      }, {});
+      const initialSelection = categoryData.reduce<Record<number, boolean>>(
+        (acc, category) => {
+          acc[category.id] = category.isSelected;
+          return acc;
+        },
+        {},
+      );
       setCategorySelection(initialSelection);
     }
   }, [categoryData]);
 
   // console.log('categories: ',categories);
-  if (isLoading) {
+  if (isPending) {
     // Handle the case when categories data is still loading
     return (
       <div className="flex h-screen items-center justify-center">
@@ -53,7 +61,7 @@ const EcommerceCategories: React.FC = () => {
       </div>
     );
   }
-  if (error)
+  if (isError)
     return (
       <div className="flex h-screen items-center justify-center">
         Error:{error?.message}

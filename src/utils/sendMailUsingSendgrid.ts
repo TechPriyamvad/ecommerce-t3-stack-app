@@ -1,4 +1,5 @@
 import sgMail from "@sendgrid/mail";
+import { TRPCClientError } from "@trpc/client";
 const apiKey = process.env.SENDGRID_API_KEY;
 
 export async function sendVerificationEmailUsingSendgrid(
@@ -7,7 +8,7 @@ export async function sendVerificationEmailUsingSendgrid(
 ){
   try {
     if (!apiKey) {
-      throw new Error("SENDGRID_API_KEY is not set");
+      throw new TRPCClientError("SENDGRID_API_KEY is not set");
     }
     sgMail.setApiKey(apiKey);
     const msg = {
@@ -20,6 +21,7 @@ export async function sendVerificationEmailUsingSendgrid(
     // console.log('sendgrid');   
     return sendgridResponse;
   } catch (error) {
+    console.error((error as { message: string }).message);
     throw error;
   }
 }

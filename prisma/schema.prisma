@@ -11,21 +11,22 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updateAt DateTime? @default(now())
-  email     String   @unique
-  name      String?
-  isDeleted Boolean  @default(false)
-  iseVerified Boolean @default(false)
-  verification_code String?
+    id                Int       @id @default(autoincrement())
+    createdAt         DateTime  @default(now())
+    updateAt          DateTime? @default(now())
+    email             String    @unique
+    name              String?
+    password          String?
+    isDeleted         Boolean   @default(false)
+    isVerified        Boolean   @default(false)
+    verification_code String?
 }
 
-model Category{
-    id Int @id @default(autoincrement())
-    name String
-    createdAt DateTime @default(now())
-    updateAt DateTime? @default(now())
-    isDeleted Boolean @default(false)
-    isSelected Boolean @default(false)
+model Category {
+    id         Int       @id @default(autoincrement())
+    name       String
+    createdAt  DateTime  @default(now())
+    updateAt   DateTime? @default(now())
+    isDeleted  Boolean   @default(false)
+    isSelected Boolean   @default(false)
 }

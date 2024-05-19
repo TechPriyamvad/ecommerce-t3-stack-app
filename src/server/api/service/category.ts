@@ -11,9 +11,14 @@ interface Category {
   isSelected: boolean;
 }
 export async function fetchAllCategories(page: number): Promise<Category[]> {
-  const categories = (await fetchAllCategoriesFromDatabase(page)) as Category[];
-  // console.log('categories: ',categories?.result?.data);
-  return categories;
+  try {
+    const categories = (await fetchAllCategoriesFromDatabase(page)) as Category[];
+    // console.log('categories: ',categories?.result?.data);
+    return categories;
+  } catch (error) {
+    console.error((error as { message: string }).message);
+    throw error;    
+  }
 }
 export async function updateCategorySelectionService(input: {
   id: number;
@@ -27,6 +32,7 @@ export async function updateCategorySelectionService(input: {
     );
     return updatedCategory;
   } catch (error) {
-    console.error(error);
+    console.error((error as { message: string }).message);
+    throw error;
   }
 }

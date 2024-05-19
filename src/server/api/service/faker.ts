@@ -1,7 +1,12 @@
 import { seedCategories } from "../repository/faker";
 
 export async function generateCategoriesData(categoryCount:number){
-    console.log('categoryCount: ',categoryCount);
-    const categories = seedCategories(categoryCount);
-    return categories;
+    try {
+        console.log('categoryCount: ',categoryCount);
+        const categories = seedCategories(categoryCount);
+        return categories;
+    } catch (error) {
+        console.error((error as { message: string }).message);
+        throw error;
+    }
 }

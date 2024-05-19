@@ -34,11 +34,13 @@ const EcommerceAccountCreation: React.FC = () => {
       if (user) {
         // redirect to login page
         alert("User already exists");
+        await router.push("/login");
       } else {
         await signupMutation.mutateAsync({ name, email, password });
         await router.push(`/emailVerification?email=${email}`);
       }
     } catch (error) {
+      console.error(error);
       throw error;
     }
   };
