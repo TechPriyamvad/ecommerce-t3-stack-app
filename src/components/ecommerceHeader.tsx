@@ -1,9 +1,26 @@
-import React from "react";
+import router from "next/router";
+import React, { useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
-import { LuShoppingCart } from "react-icons/lu";
+import { LuShoppingCart, LuLogOut } from "react-icons/lu";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 
 const EcommerceHeader: React.FC = () => {
+  const [logout, setLogout] = React.useState<boolean>(false);
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    token ? setLogout(true) : setLogout(false);
+  }, [logout]);
+
+  async function handleLogout(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) {
+    console.log("Logging out");
+    event.preventDefault();
+    localStorage.removeItem("jwtToken");
+    await router.push("/login");
+    setLogout(false);
+  }
+
   return (
     <>
       <div className="bg-neutralwhite absolute left-0 top-0 h-[100px] w-[1440px]">
@@ -25,8 +42,19 @@ const EcommerceHeader: React.FC = () => {
         <div className="text-neutralblack absolute left-[40px] top-[42px] text-[32px] font-bold leading-[normal] tracking-[0] [font-family:'Inter-Bold',Helvetica]">
           ECOMMERCE
         </div>
-        <IoIosSearch className="!absolute !left-[1304px] !top-[52px] !h-[32px] !w-[32px]" />
-        <LuShoppingCart className="!absolute !left-[1384px] !top-[52px] !h-[32px] !w-[32px]" />
+        <IoIosSearch className="!absolute !left-[1200px] !top-[52px] !h-[32px] !w-[32px]" />
+        <LuShoppingCart className="!absolute !left-[1280px] !top-[52px] !h-[32px] !w-[32px]" />
+        {logout && (
+          <div className="!relative z-10">
+            <button
+              onClick={handleLogout}
+              className="!absolute !left-[1350px] !top-[55px] flex flex-row items-center text-[16px]"
+            >
+              <LuLogOut className="pointer-events-none" />
+              <span className="pointer-events-none ml-2">Logout</span>
+            </button>
+          </div>
+        )}
         <div className="absolute left-[1368px] top-[52px] h-[32px] w-[32px]">
           <div className="relative left-[5px] top-[6px] h-[20px] w-[22px] bg-[url(/vector.svg)] bg-[100%_100%]" />
         </div>
@@ -50,7 +78,7 @@ const EcommerceHeader: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="absolute left-0 top-[100px] h-[36px] w-[1440px] bg-neutral-100">
+      <div className="absolute left-0 top-[100px] h-[36px] w-full bg-neutral-100">
         <div className="relative left-[575px] top-[10px] h-[18px] w-[292px]">
           <SlArrowLeft className="!absolute !left-0 !top-0 !h-[16px] !w-[16px]" />
           <SlArrowRight className="!absolute !left-[274px] !top-0 !h-[16px] !w-[16px]" />

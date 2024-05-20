@@ -4,6 +4,7 @@ import { TRPCClientError } from "@trpc/client";
 import type {
   MiddlewareResult,
 } from "@trpc/server/unstable-core-do-not-import";
+import { log } from "console";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "~/utils/jwt";
 
@@ -21,11 +22,13 @@ export const isUserAuthenticated = async ({
 }): Promise<MiddlewareResult<object>> => {
   console.log("ctx: ", ctx?.req?.headers?.authorization);
   const token = ctx?.req?.headers?.authorization;
+  
   try {
     if (!token) {
       throw new TRPCClientError("Authorization header token is missing");
     }
     verifyToken(token);
+    log("User is authenticated");
   } catch (error) {
     console.error(
       "Error in user authentication middleware: ",

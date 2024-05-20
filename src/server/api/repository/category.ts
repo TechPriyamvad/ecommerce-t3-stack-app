@@ -50,3 +50,13 @@ export async function updateCategorySelectionInDatabase(
     throw new TRPCError({message:"Failed to update category selection",code:'INTERNAL_SERVER_ERROR'});
   }
 }
+
+export async function fetchCategoriesFromDatabase() {
+  try {
+    const categories = await prisma.category.findMany();
+    return categories;
+  } catch (error) {
+    console.error("Error fetching categories: ", error);
+    throw new TRPCError({message:"Failed to fetch categories",code:'INTERNAL_SERVER_ERROR'});
+  }
+}

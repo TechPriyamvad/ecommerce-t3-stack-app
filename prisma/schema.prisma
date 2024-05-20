@@ -20,6 +20,7 @@ model User {
     isDeleted         Boolean   @default(false)
     isVerified        Boolean   @default(false)
     verification_code String?
+    user_categories   user_categories[]
 }
 
 model Category {
@@ -28,5 +29,18 @@ model Category {
     createdAt  DateTime  @default(now())
     updateAt   DateTime? @default(now())
     isDeleted  Boolean   @default(false)
-    isSelected Boolean   @default(false)
+    user_categories user_categories[]
+    isSelected Boolean @default(false)
+}
+
+model user_categories{
+    user_id    Int      
+    category_id Int     
+    is_category_selected Boolean  @default(false)
+    createdAt  DateTime  @default(now())
+    updateAt   DateTime? @default(now())
+    isDeleted  Boolean   @default(false)
+    user       User      @relation(fields: [user_id], references: [id])
+    category   Category  @relation(fields: [category_id], references: [id])
+    @@id([user_id, category_id])
 }

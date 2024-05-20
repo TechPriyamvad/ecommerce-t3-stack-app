@@ -19,9 +19,19 @@ const EcommerceAccountVerification: React.FC<
   const [verification_code, setVerificationCode] = React.useState<string>("");
 
   // find user by email and verification code
-  const verifyUserMutation = api.user.verifyUser.useMutation();
-  // const {isSuccess,mutateAsync} = api.user.verifyUser.useMutation();
-  
+  const createCategoryMutation = api.userCategory.createUserCategories.useMutation({
+    onSuccess: async()=>{
+      await router.push("/login");
+    }
+  });
+  const verifyUserMutation = api.user.verifyUser.useMutation({
+    onSuccess: async(data)=>{
+      // console.log('verify user',data);
+      if(data?.id !== undefined)
+        await createCategoryMutation.mutateAsync({ user_id: data?.id });
+    }
+  });
+
   const handleFirstDigitChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setFirstDigit(event.target.value);
 
@@ -49,23 +59,31 @@ const EcommerceAccountVerification: React.FC<
   const handleEigthDigitChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEigthDigit(event.target.value);
 
-  const verifyUser = async(
+  const verifyUser = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-    const verification_code = `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}${fifthDigit}${sixthDigit}${seventhDigit}${eigthDigit}`.trim();
+    const verification_code =
+      `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}${fifthDigit}${sixthDigit}${seventhDigit}${eigthDigit}`.trim();
     try {
       setVerificationCode(verification_code);
       // console.log(verification_code);
-      await verifyUserMutation.mutateAsync({ email,verification_code});
-      await router.push(`/categories`);
-    } catch (error:unknown) {
-      if(typeof error === 'object' && error !== null)
-        alert((error as {message:string}).message);
+      await verifyUserMutation.mutateAsync({ email, verification_code });
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null)
+        alert((error as { message: string }).message);
     }
   };
 
+  if (verifyUserMutation.isPending) {
+    return <div>Verfing user...</div>;
+  }
+
   // console.log(email);
+
+  if (verifyUserMutation.isError) {
+    alert(verifyUserMutation.error);
+  }
 
   return (
     <div>

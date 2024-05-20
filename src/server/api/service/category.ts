@@ -1,3 +1,4 @@
+import { log } from "console";
 import {
   fetchAllCategoriesFromDatabase,
   updateCategorySelectionInDatabase,
@@ -12,6 +13,7 @@ interface Category {
 }
 export async function fetchAllCategories(page: number): Promise<Category[]> {
   try {
+    log('fetching categories');
     const categories = (await fetchAllCategoriesFromDatabase(page)) as Category[];
     // console.log('categories: ',categories?.result?.data);
     return categories;

@@ -43,7 +43,7 @@ const EcommerceLogin: React.FC = () => {
 
   const onSuccessFullLogin = async()=>{
     localStorage.setItem("jwtToken", data?.token ?? '');
-    await router.push('/categories');
+    data?.user?.id ? await router.push(`/categories?user_id=${data?.user.id}`):await router.push('/login');
   }
 
   if (isSuccess) {
@@ -54,6 +54,12 @@ const EcommerceLogin: React.FC = () => {
       }).catch((error) => {
         console.error('Failed to log in and redirect:', error);
       });
+    }
+    else { 
+      alert(data?.message);
+      router.push('/signup')
+      .then(() => console.log('Redirected to signup page'))
+      .catch((error) => console.error('Failed to redirect to signup page', error));
     }
   }
 

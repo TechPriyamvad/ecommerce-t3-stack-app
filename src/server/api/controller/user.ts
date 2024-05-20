@@ -11,7 +11,7 @@ import { signupRequestSchema } from "~/server/api/schema/signup";
 import { z } from "zod";
 import { loginRequestSchema } from "../schema/login";
 
-export const signupRouter = createTRPCRouter({
+export const userRouter = createTRPCRouter({
   signUp: publicProcedure
     .input(signupRequestSchema)
     .mutation(async ({ input }) => await createAccount(input)),

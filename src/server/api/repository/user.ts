@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+
 const prisma = new PrismaClient();
+
 export async function signup(name: string, email: string,verification_code:string,password:string){
     try {
         const newUser = await prisma.user.create({

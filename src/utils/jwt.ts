@@ -26,14 +26,13 @@ function generateToken(user: User): string {
   }
 }
 
-function verifyToken(token: string): void {
+function verifyToken(token: string):void{
   try {
     const secret = process.env.JWT_SECRET_KEY;
     if (!secret) {
       throw new TRPCClientError("JWT_SECRET is not defined");
     }
     const decodedToken = verify(token, secret);
-
     // check token expiry
     if (typeof decodedToken === "object" && decodedToken.exp) {
       const expirationTime = decodedToken.exp * 1000;
