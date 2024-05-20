@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { generateFakeCategories } from "~/utils/fakerDataGenerator";
 
-const prisma = new PrismaClient();
 
 export async function seedCategories(categoryCount:number){
     try {

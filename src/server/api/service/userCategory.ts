@@ -8,7 +8,6 @@ import {
   fetchUserCategoriesFromDatabase,
   updateUserCategorySelectionInDatabase,
 } from "../repository/userCategory";
-import { use } from "react";
 
 interface UserCategory {
   user_id: number | undefined;

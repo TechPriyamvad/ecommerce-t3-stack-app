@@ -17,7 +17,7 @@ const CategoriesPage: React.FC = () => {
   return (
     <>
       <EcommerceHeader />
-      <EcommerceCategories user_id={user_id!} />
+      <EcommerceCategories user_id={user_id} />
     </>
   );
 };

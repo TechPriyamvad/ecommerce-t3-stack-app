@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { api, setToken } from "~/utils/api";
 import { Pagination } from "@nextui-org/pagination";
 import { ITEMS_PER_PAGE } from "constants/clientConstants";

@@ -16,7 +16,7 @@ const EcommerceAccountVerification: React.FC<
   const [sixthDigit, setSixthDigit] = React.useState<string>("");
   const [seventhDigit, setSeventhDigit] = React.useState<string>("");
   const [eigthDigit, setEigthDigit] = React.useState<string>("");
-  const [verification_code, setVerificationCode] = React.useState<string>("");
+  const [verificationCode, setVerificationCode] = React.useState<string>("");
 
   // find user by email and verification code
   const createCategoryMutation = api.userCategory.createUserCategories.useMutation({
@@ -63,12 +63,12 @@ const EcommerceAccountVerification: React.FC<
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-    const verification_code =
+    const verify_code =
       `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}${fifthDigit}${sixthDigit}${seventhDigit}${eigthDigit}`.trim();
     try {
-      setVerificationCode(verification_code);
+      setVerificationCode(verify_code);
       // console.log(verification_code);
-      await verifyUserMutation.mutateAsync({ email, verification_code });
+      await verifyUserMutation.mutateAsync({ email, verification_code:verificationCode });
     } catch (error: unknown) {
       if (typeof error === "object" && error !== null)
         alert((error as { message: string }).message);
